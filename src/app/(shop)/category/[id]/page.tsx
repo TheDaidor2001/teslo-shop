@@ -33,7 +33,7 @@ export default function Category({ params }: Props) {
 
     return (
         <>
-            <Title title={`Articulos ${labels[id]}`} subtitle='Ropa para los niños' className='mb-2' />
+            <Title title={`Articulos ${labels[id]}`} subtitle={`Ropa para ${labels[id]}`} className='mb-2' />
             <ProductGrid products={products} />
         </>
     )
