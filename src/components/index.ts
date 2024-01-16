@@ -8,6 +8,7 @@ export * from './products/product-grid/ProductGrid'
 export * from './products/product-grid/ProductsGridItem'
 export * from './ui/sidebar/Sidebar'
 export * from './ui/footer/Footer'
+export * from './ui/pagination/Pagination'
 
 //Product
 export * from './product/sizeSelector/SizeSelector'
