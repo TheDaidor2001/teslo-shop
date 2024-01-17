@@ -3,11 +3,14 @@ import clsx from "clsx";
 
 
 interface Props {
-    selectedSize: Size;
+    selectedSize?: Size;
     availableSizes: Size[];
+
+    //metodo
+    onSelectedSize: (size: Size) => void;
 }
 
-export const SizeSelector = ({ availableSizes, selectedSize }: Props) => {
+export const SizeSelector = ({ availableSizes, selectedSize, onSelectedSize }: Props) => {
 
 
 
@@ -20,6 +23,7 @@ export const SizeSelector = ({ availableSizes, selectedSize }: Props) => {
                 {
                     availableSizes.map(size => (
                         <button
+                            onClick={() => onSelectedSize(size)}
                             className={
                                 clsx(
                                     "mx-2 hover:underline text-lg",
