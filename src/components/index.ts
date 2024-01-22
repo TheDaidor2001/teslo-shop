@@ -16,3 +16,8 @@ export * from './product/cuantitySelector/CuantitySelector'
 export * from './product/slodeShow/ProductSlideShow'
 export * from './product/slodeShow/ProductMobileSlideShow'
 export * from './product/stock-label/StockLabel'
+
+
+//Providers
+
+export * from './provider/Provider'
