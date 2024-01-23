@@ -55,8 +55,8 @@ export const AddressForm = ({ countries, userStoreAddres = {} }: Props) => {
     }, [])
 
     const onSubmit = async (data: FormInputs) => {
-        setAddress(data)
         const { rememberAddress, ...rest } = data
+        setAddress(rest)
         if (rememberAddress) {
             //TODO server action
             await setUserAddress(rest, session!.user.id)

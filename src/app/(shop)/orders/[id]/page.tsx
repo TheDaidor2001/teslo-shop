@@ -1,18 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
+import { getOrderById } from "@/actions/order/get-order-by-id";
 import { Title } from "@/components";
-import { initialData } from "@/seed/seed";
+import { currencyFormat } from "@/utils";
 import clsx from "clsx";
+
 import Image from "next/image";
-import Link from "next/link";
+import { redirect } from "next/navigation";
 import { IoCardOutline } from "react-icons/io5";
 
-
-
-const productsInCart = [
-    initialData.products[0],
-    initialData.products[1],
-    initialData.products[2],
-]
 
 
 interface Props {
@@ -22,12 +17,19 @@ interface Props {
 }
 
 
-export default function CheckoutPage({ params }: Props) {
+export default async function CheckoutPage({ params }: Props) {
 
     const { id } = params
 
-    //TODO verificar
-    //Redirect(/)
+
+    //TODO llamar server action
+    const { ok, order } = await getOrderById(id)
+
+    if (!ok) {
+        redirect('/')
+    }
+
+    const address = order?.OrderAddress
 
 
     return (
@@ -35,7 +37,7 @@ export default function CheckoutPage({ params }: Props) {
 
             <div className="flex flex-col w-[1000px]">
 
-                <Title title={`Orden nº${id}`} />
+                <Title title={`Orden nº${id.split('-').at(-1)}`} />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     {/**Carrito */}
@@ -44,24 +46,26 @@ export default function CheckoutPage({ params }: Props) {
                             clsx(
                                 "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5",
                                 {
-                                    'bg-red-500': false,
-                                    'bg-green-700': true,
+                                    'bg-red-500': !order?.isPaid,
+                                    'bg-green-700': order?.isPaid,
                                 }
                             )
                         }>
                             <IoCardOutline size={30} />
                             {/* <span className="mx-2">Pendiente de pago</span> */}
-                            <span className="mx-2">Orden Pagada</span>
+                            <span className="mx-2">
+                                {order?.isPaid ? 'Pagado' : 'Pendiente de pago'}
+                            </span>
                         </div>
 
                         {/**Items */}
 
                         {
-                            productsInCart.map(product => (
-                                <div key={product.slug} className="flex mb-5">
+                            order?.OrderItem.map(item => (
+                                <div key={item.product.slug + '-' + item.size} className="flex mb-5">
                                     <Image
-                                        src={`/products/${product.images[0]}`}
-                                        alt={product.title}
+                                        src={`/products/${item.product.ProductImages[0].url}`}
+                                        alt={item.product.title}
                                         width={100}
                                         height={100}
                                         style={{
@@ -72,9 +76,9 @@ export default function CheckoutPage({ params }: Props) {
                                     />
 
                                     <div>
-                                        <p>{product.title}</p>
-                                        <p>{product.price}€ x 3</p>
-                                        <p className="font-bold"> Subtotal: ${product.price * 3}€</p>                                    </div>
+                                        <p>{item.product.title}</p>
+                                        <p>{currencyFormat(item.price)} x 3</p>
+                                        <p className="font-bold"> Subtotal: ${currencyFormat(item.price * item.quantity)}</p>                                    </div>
                                 </div>
                             ))
                         }
@@ -86,11 +90,11 @@ export default function CheckoutPage({ params }: Props) {
 
                         <h2 className="text-2xl mb-2 ">Dirección de entrega</h2>
                         <div className="mb-10">
-                            <p className="text-xl">Daniel Castillo</p>
-                            <p>Calahorra, La Rioja</p>
-                            <p>C/Eras nº10</p>
-                            <p>CP 26500</p>
-                            <p>123.123.123</p>
+                            <p className="text-xl">{address!.firstName} - {address!.lastName}</p>
+                            <p>{address!.address}</p>
+                            <p>{address!.addressTwo}</p>
+                            <p>{address!.postalCode}</p>
+                            <p>{address!.phone}</p>
                         </div>
 
                         {/**divider */}
@@ -100,13 +104,16 @@ export default function CheckoutPage({ params }: Props) {
 
                         <div className="grid grid-cols-2">
                             <span>No. Productos</span>
-                            <span className="text-right">3 Artículos</span>
+                            <span className="text-right">{order!.itemsInOrder === 1 ? '1 Artículo' : `${order!.itemsInOrder} Artículos`}</span>
 
                             <span>Subtotal</span>
-                            <span className="text-right">100 €</span>
+                            <span className="text-right">{currencyFormat(order!.subTotal)}</span>
+
+                            <span className="text-sm">Impuestos (15%)</span>
+                            <span className="text-right text-sm">{currencyFormat(order!.tax)}</span>
 
                             <span className="text-2xl mt-5">Total: </span>
-                            <span className="text-right mt-5 text-2xl">100 €</span>
+                            <span className="text-right mt-5 text-2xl">{currencyFormat(order!.total)}</span>
                         </div>
 
                         <div className="mt-5 mb-2 w-full">
@@ -114,14 +121,14 @@ export default function CheckoutPage({ params }: Props) {
                                 clsx(
                                     "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5",
                                     {
-                                        'bg-red-500': false,
-                                        'bg-green-700': true,
+                                        'bg-red-500': !order?.isPaid,
+                                        'bg-green-700': order?.isPaid,
                                     }
                                 )
                             }>
                                 <IoCardOutline size={30} />
                                 {/* <span className="mx-2">Pendiente de pago</span> */}
-                                <span className="mx-2">Orden Pagada</span>
+                                {order?.isPaid ? 'Pagado' : 'Pendiente de pago'}
                             </div>
 
                         </div>
