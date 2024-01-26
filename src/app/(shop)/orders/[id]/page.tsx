@@ -1,12 +1,13 @@
+
+
 /* eslint-disable react/no-unescaped-entities */
 import { getOrderById } from "@/actions/order/get-order-by-id";
-import { Title } from "@/components";
+import { OrderStatus, PaypalBtn, Title } from "@/components";
 import { currencyFormat } from "@/utils";
-import clsx from "clsx";
+
 
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { IoCardOutline } from "react-icons/io5";
 
 
 
@@ -42,21 +43,7 @@ export default async function CheckoutPage({ params }: Props) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     {/**Carrito */}
                     <div className="flex flex-col mt-5">
-                        <div className={
-                            clsx(
-                                "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5",
-                                {
-                                    'bg-red-500': !order?.isPaid,
-                                    'bg-green-700': order?.isPaid,
-                                }
-                            )
-                        }>
-                            <IoCardOutline size={30} />
-                            {/* <span className="mx-2">Pendiente de pago</span> */}
-                            <span className="mx-2">
-                                {order?.isPaid ? 'Pagado' : 'Pendiente de pago'}
-                            </span>
-                        </div>
+                        <OrderStatus isPaid={order?.isPaid ?? false} />
 
                         {/**Items */}
 
@@ -117,20 +104,18 @@ export default async function CheckoutPage({ params }: Props) {
                         </div>
 
                         <div className="mt-5 mb-2 w-full">
-                            <div className={
-                                clsx(
-                                    "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5",
-                                    {
-                                        'bg-red-500': !order?.isPaid,
-                                        'bg-green-700': order?.isPaid,
-                                    }
-                                )
-                            }>
-                                <IoCardOutline size={30} />
-                                {/* <span className="mx-2">Pendiente de pago</span> */}
-                                {order?.isPaid ? 'Pagado' : 'Pendiente de pago'}
-                            </div>
+                            with <span className="text-blue-500 font-bold">Stripe</span>
 
+                            {
+                                order?.isPaid
+                                    ? (
+                                        <OrderStatus isPaid={order?.isPaid ?? false} />
+                                    )
+                                    : (
+                                        <PaypalBtn amount={order!.total} orderId={order!.id} />
+
+                                    )
+                            }
                         </div>
 
                     </div>

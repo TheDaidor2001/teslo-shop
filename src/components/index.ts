@@ -20,4 +20,12 @@ export * from './product/stock-label/StockLabel'
 
 //Providers
 
-export * from './provider/Provider'
+export * from './providers/Providers'
+
+
+//Paypal 
+export * from './paypal/PaypalBtn'
+
+
+//
+export * from './orders/OrderStatus'
