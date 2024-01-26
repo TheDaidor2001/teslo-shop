@@ -52,7 +52,7 @@ export const AddressForm = ({ countries, userStoreAddres = {} }: Props) => {
         if (address.firstName) {
             reset(address)
         }
-    }, [])
+    }, [address, reset])
 
     const onSubmit = async (data: FormInputs) => {
         const { rememberAddress, ...rest } = data

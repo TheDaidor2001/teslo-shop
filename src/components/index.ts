@@ -24,7 +24,7 @@ export * from './providers/Providers'
 
 
 //Paypal 
-export * from './paypal/PaypalBtn'
+export * from './Paypal/PaypalBtn'
 
 
 //
